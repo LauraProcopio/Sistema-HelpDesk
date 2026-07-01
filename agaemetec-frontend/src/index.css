@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  /* Cores do nosso Blueprint Visual */
+  --color-brand-dark: #1e3a5f;
+  --color-brand-primary: #2e75b6;
+  --color-brand-accent: #4a90d9;
+  --color-surface: #f4f6fa;
+  --color-success: #27ae60;
+  --color-warning: #e67e22;
+  --color-error: #e74c3c;
+
+  /* Raio de borda padrão corporativo */
+  --radius-std: 8px;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-brand-dark);
+  font-family: 'Inter', sans-serif;
+}

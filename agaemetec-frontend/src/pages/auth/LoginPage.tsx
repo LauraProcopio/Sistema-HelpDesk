@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { KeyRound, Mail, LogIn, Eye, EyeOff } from 'lucide-react';
+import { KeyRound, Mail, LogIn, Eye, EyeOff, ShieldAlert, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function LoginPage() {
@@ -11,6 +11,15 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Função utilitária com as credenciais reais do teu PostgreSQL
+  function handleQuickFill(demoEmail: string) {
+    setEmail(demoEmail);
+    setPassword('123456'); // Define aqui a senha padrão correspondente aos hashes do banco
+    toast.info('Campos preenchidos!', { 
+      description: 'Clique em "Entrar no Painel" para aceder ao sistema.' 
+    });
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -22,7 +31,7 @@ export function LoginPage() {
     }
 
     try {
-      // Dispara a autenticação contra a nossa API do Postgres local
+      // Dispara a autenticação contra a API do Postgres local
       const result = await signIn(email, password);
 
       if (result && result.user) {
@@ -30,15 +39,14 @@ export function LoginPage() {
           description: 'Acesso autorizado no ecossistema Agaemetec.'
         });
 
-        // BLINDAGEM: Garante a captura da role de qualquer uma das duas fontes do hook
+        // Captura a role de forma segura do hook
         const userRole = result.role || result.user.role || 'client';
         const normalizedRole = userRole.toLowerCase();
 
-        // Redirecionamento dinâmico baseado na Role salva nas tabelas locais
+        // Redirecionamento dinâmico baseado na Role guardada localmente
         if (normalizedRole === 'admin') {
           navigate('/admin/tickets');
         } else {
-          // Certifique-se de que no seu Routes do React esta rota existe exatamente assim!
           navigate('/client/tickets'); 
         }
       }
@@ -124,7 +132,41 @@ export function LoginPage() {
           </div>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-50 text-center">
+        {/* ACESSO RÁPIDO PARA O PORTFÓLIO (POSTGRESQL REAL) */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2.5">
+          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">
+            Acesso Rápido (Demonstração)
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button 
+              type="button"
+              onClick={() => handleQuickFill('laura.procopio@agaemetec.com.br')}
+              className="flex-1 flex items-center gap-2 bg-white px-3 py-2 rounded-xl text-left border border-gray-200/60 hover:border-brand-primary/40 transition-all group"
+            >
+              <ShieldAlert size={14} className="text-amber-500" />
+              <div className="leading-tight">
+                <p className="text-[10px] font-bold text-gray-700 group-hover:text-brand-primary">Perfil Admin</p>
+                <p className="text-[9px] text-gray-400 truncate max-w-[125px]">laura.procopio@...</p>
+              </div>
+            </button>
+
+            <button 
+              type="button"
+              onClick={() => handleQuickFill('carlos.miranda@unidadealpha.com.br')}
+              className="flex-1 flex items-center gap-2 bg-white px-3 py-2 rounded-xl text-left border border-gray-200/60 hover:border-brand-primary/40 transition-all group"
+            >
+              <User size={14} className="text-blue-500" />
+              <div className="leading-tight">
+                <p className="text-[10px] font-bold text-gray-700 group-hover:text-brand-primary">Perfil Cliente</p>
+                <p className="text-[9px] text-gray-400 truncate max-w-[125px]">carlos.miranda@...</p>
+              </div>
+            </button>
+          </div>
+          <p className="text-[8px] text-center text-gray-400 font-medium">Senha padrão do banco: <span className="font-bold">123456</span></p>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-gray-50 text-center">
           <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest">
             Segurança Criptografada SSL End-to-End
           </p>

@@ -27,13 +27,13 @@ export function EditCustomer() {
         setLoading(true);
 
         // 1. Carrega as empresas disponíveis via API local do Postgres
-        const compResponse = await fetch('http://localhost:3001/api/companies');
+        const compResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/companies`);
         if (!compResponse.ok) throw new Error('Falha ao obter lista de unidades.');
         const companiesData = await compResponse.json();
         setAvailableCompanies(companiesData || []);
 
         // 2. Carrega os dados específicos do utilizador via API local
-        const userResponse = await fetch(`http://localhost:3001/api/customers/${id}`);
+        const userResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${id}`);
         if (!userResponse.ok) throw new Error('Falha ao obter dados do perfil.');
         const profileData = await userResponse.json();
 
@@ -77,7 +77,7 @@ export function EditCustomer() {
 
     try {
       // Envia os dados atualizados e o array de vínculos para a transação do Postgres no Back-end
-      const response = await fetch(`http://localhost:3001/api/customers/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

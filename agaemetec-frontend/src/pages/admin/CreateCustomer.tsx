@@ -21,7 +21,7 @@ export function CreateCustomer() {
   // Busca as empresas através da API local do Postgres
   async function loadCompanies() {
     try {
-      const response = await fetch('http://localhost:3001/api/companies');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/companies`);
       if (!response.ok) throw new Error('Falha ao obter lista de unidades.');
       const data = await response.json();
       setAvailableCompanies(data || []);
@@ -46,7 +46,7 @@ export function CreateCustomer() {
 
     try {
       // Envia os dados estruturados para o Back-end salvar de forma transacional no Postgres
-      const response = await fetch('http://localhost:3001/api/customers', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

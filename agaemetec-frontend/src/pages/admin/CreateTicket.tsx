@@ -23,7 +23,7 @@ export function CreateTicket() {
   // 1. Busca as empresas disponíveis consumindo nosso Back-end local
   async function loadMyCompanies() {
     try {
-      const response = await fetch('http://localhost:3001/api/companies');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/companies`);
       if (!response.ok) throw new Error('Falha ao obter lista de unidades da Agametec Sistemas.');
       const formatted = await response.json();
 
@@ -57,7 +57,7 @@ export function CreateTicket() {
       const currentUser = JSON.parse(userJson);
 
       // Enviamos os dados do ticket para o nosso Back-end unificado com o UUID dinâmico
-      const response = await fetch('http://localhost:3001/api/tickets', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

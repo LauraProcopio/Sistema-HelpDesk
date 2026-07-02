@@ -14,7 +14,7 @@ export function Customers() {
   async function loadCustomers() {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/customers');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers`);
       if (!response.ok) throw new Error('Falha ao carregar utilizadores.');
       const data = await response.json();
       setCustomers(data || []);
@@ -37,7 +37,7 @@ export function Customers() {
         label: "Confirmar",
         onClick: async () => {
           try {
-            const response = await fetch(`http://localhost:3001/api/customers/${id}/status`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${id}/status`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ is_active: !is_active })

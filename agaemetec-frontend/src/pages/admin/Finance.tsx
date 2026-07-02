@@ -21,7 +21,7 @@ export function Finance() {
   async function loadFinanceData() {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/finance/metrics');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/finance/metrics`);
       if (!response.ok) throw new Error('Falha ao sincronizar o balancete financeiro.');
       const data = await response.json();
       setTickets(data || []);

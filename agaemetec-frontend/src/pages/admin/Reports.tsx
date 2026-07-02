@@ -33,14 +33,14 @@ export function Reports() {
     setLoading(true);
     try {
       // Puxa as empresas para alimentar o select de filtros
-      const compResponse = await fetch('http://localhost:3001/api/companies');
+      const compResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/companies`);
       if (!compResponse.ok) throw new Error('Falha ao carregar empresas para o relatório.');
       const compData = await compResponse.json();
       setCompanies(compData || []);
 
       // Bate na rota analítica do back-end passando os parâmetros na URL
       const reportsResponse = await fetch(
-        `http://localhost:3001/api/reports/monthly?month=${selectedMonth}&year=${selectedYear}&companyId=${selectedCompanyId}`
+        `${import.meta.env.VITE_API_URL}/api/reports/monthly?month=${selectedMonth}&year=${selectedYear}&companyId=${selectedCompanyId}`
       );
       if (!reportsResponse.ok) throw new Error('Falha ao processar o relatório mensal.');
       const reportsData = await reportsResponse.json();

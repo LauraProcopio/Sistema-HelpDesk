@@ -31,7 +31,7 @@ export function Settings() {
       if (!userJson) throw new Error("Sessão não localizada. Faça login novamente.");
       const currentUser = JSON.parse(userJson);
 
-      const response = await fetch(`http://localhost:3001/api/customers/${currentUser.id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${currentUser.id}`);
       if (!response.ok) throw new Error('Falha ao sincronizar dados do perfil.');
       const data = await response.json();
 
@@ -69,7 +69,7 @@ export function Settings() {
     setSaving(true);
     try {
       // Passamos os dados junto ao array de empresas preservado para manter a integridade relacional
-      const response = await fetch(`http://localhost:3001/api/customers/${profile.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${profile.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -110,7 +110,7 @@ export function Settings() {
 
     setChangingPassword(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/customers/${profile.id}/password`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/customers/${profile.id}/password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: passwordData.newPassword })

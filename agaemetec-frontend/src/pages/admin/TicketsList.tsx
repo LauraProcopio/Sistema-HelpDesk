@@ -23,13 +23,13 @@ export function TicketsList() {
       const userId = userJson ? JSON.parse(userJson).id : 'all';
       
       // 2. CORREÇÃO DE SEGURANÇA: Injeta os parâmetros na busca de empresas
-      const compResponse = await fetch(`http://localhost:3001/api/companies?role=${cachedRole}&userId=${userId}`);
+      const compResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/companies?role=${cachedRole}&userId=${userId}`);
       if (!compResponse.ok) throw new Error('Falha ao carregar empresas autorizadas');
       const compData = await compResponse.json();
       setCompanies(compData || []);
 
       // 3. Busca os chamados injetando o userId e a role dinâmicos para produção
-      const ticketsResponse = await fetch(`http://localhost:3001/api/tickets?role=${cachedRole}&userId=${userId}`);
+      const ticketsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets?role=${cachedRole}&userId=${userId}`);
       if (!ticketsResponse.ok) throw new Error('Falha ao carregar chamados');
       const tickData = await ticketsResponse.json();
       
@@ -57,7 +57,7 @@ export function TicketsList() {
         label: "Excluir",
         onClick: async () => {
           try {
-            const response = await fetch(`http://localhost:3001/api/tickets/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets/${id}`, {
               method: 'DELETE'
             });
 

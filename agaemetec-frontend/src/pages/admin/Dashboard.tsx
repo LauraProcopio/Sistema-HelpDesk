@@ -22,7 +22,7 @@ export function Dashboard() {
         userId = JSON.parse(userJson).id; // Puxa o UUID real do Postgres
       }
 
-      const response = await fetch(`http://localhost:3001/api/tickets?role=${cachedRole}&userId=${userId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets?role=${cachedRole}&userId=${userId}`);
       if (!response.ok) throw new Error('Falha ao sincronizar o painel de inteligência.');
       const data = await response.json();
 

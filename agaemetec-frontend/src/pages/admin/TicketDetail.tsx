@@ -20,7 +20,7 @@ export function TicketDetail() {
   // 1. Carrega os dados consolidados (Ticket + Mensagens) vindo da API do Postgres local
   async function loadData() {
     try {
-      const response = await fetch(`http://localhost:3001/api/tickets/${id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets/${id}`);
       if (!response.ok) throw new Error('Não foi possível recuperar os dados do chamado.');
       const data = await response.json();
       
@@ -66,7 +66,7 @@ export function TicketDetail() {
     try {
       const cachedRole = localStorage.getItem('@Agametec:role') || 'Client';
 
-      const response = await fetch('http://localhost:3001/api/tickets/comments', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -89,7 +89,7 @@ export function TicketDetail() {
   // 3. Salva alterações de status e dados financeiros via PATCH na API (Gatilha e-mail/whats automático no Back)
   async function saveChanges() {
     try {
-      const response = await fetch(`http://localhost:3001/api/tickets/${id}/status`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -118,7 +118,7 @@ export function TicketDetail() {
         label: "Confirmar",
         onClick: async () => {
           try {
-            const response = await fetch(`http://localhost:3001/api/tickets/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tickets/${id}`, {
               method: 'DELETE'
             });
 

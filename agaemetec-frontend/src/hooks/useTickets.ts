@@ -33,7 +33,7 @@ export function useTickets() {
 
       // 2. Passa os parâmetros reais e limpos para o seu back-end local
       const response = await fetch(
-        `http://localhost:3001/api/tickets?role=${cachedRole}&userId=${userId}`
+        `${import.meta.env.VITE_API_URL}/api/tickets?role=${cachedRole}&userId=${userId}`
       );
       const data = await response.json();
 

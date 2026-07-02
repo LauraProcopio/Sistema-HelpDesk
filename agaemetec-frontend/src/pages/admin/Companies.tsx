@@ -21,7 +21,7 @@ export function Companies() {
   async function loadCompanies() {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/companies');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/companies`);
       if (!response.ok) throw new Error('Falha ao carregar a lista de empresas.');
       const data = await response.json();
       setCompanies(data || []);
@@ -48,7 +48,7 @@ export function Companies() {
         label: "Confirmar",
         onClick: async () => {
           try {
-            const response = await fetch(`http://localhost:3001/api/companies/${company.id}/status`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/companies/${company.id}/status`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ is_active: newStatus })
@@ -90,8 +90,8 @@ export function Companies() {
       };
 
       const url = editingCompany 
-        ? `http://localhost:3001/api/companies/${editingCompany.id}`
-        : 'http://localhost:3001/api/companies';
+        ? `${import.meta.env.VITE_API_URL}1/api/companies/${editingCompany.id}`
+        : `${import.meta.env.VITE_API_URL}/api/companies`;
 
       const method = editingCompany ? 'PUT' : 'POST';
 

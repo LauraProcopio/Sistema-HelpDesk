@@ -13,77 +13,70 @@ import {
 } from 'lucide-react';
 import logoImg from '../../assets/logo-agaemetec2.png';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../../services/supabase';
 
 export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // INÍCIO INSTANTÂNEO: Lê o cargo do localStorage para evitar o "delay"
+  // 1. Pega os dados reais salvos localmente na sessão do Postgres de forma instantânea
   const [userData, setUserData] = useState({
     name: '',
-    role: localStorage.getItem('@Agametec:role') || '', 
+    role: localStorage.getItem('@Agametec:role') || 'Client', 
     initials: ''
   });
 
-  async function loadUserProfile() {
+  function loadUserProfile() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      // Recupera o objeto do usuário que guardamos no momento do Login
+      const userJson = localStorage.getItem('@Agametec:user');
+      const cachedRole = localStorage.getItem('@Agametec:role') || 'Client';
       
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('name, role')
-          .eq('id', user.id)
-          .single();
+      if (userJson) {
+        const user = JSON.parse(userJson);
+        const userName = user.name || 'Utilizador';
+        
+        // Calcula as iniciais dinamicamente
+        const nameParts = userName.split(' ') || ['U'];
+        const initials = nameParts.length > 1 
+          ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+          : nameParts[0].substring(0, 2).toUpperCase();
 
-        if (profile) {
-          // Atualiza o cache local para garantir que está sempre correto
-          localStorage.setItem('@Agametec:role', profile.role);
-
-          const nameParts = profile.name?.split(' ') || ['U'];
-          const initials = nameParts.length > 1 
-            ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
-            : nameParts[0].substring(0, 2).toUpperCase();
-
-          setUserData({
-            name: profile.name || 'Utilizador',
-            role: profile.role || 'Cliente',
-            initials: initials
-          });
-        }
+        setUserData({
+          name: userName,
+          role: cachedRole,
+          initials: initials
+        });
       }
     } catch (error) {
-      console.error('Erro ao carregar perfil:', error);
+      console.error('Erro ao ler perfil do localStorage:', error);
     }
   }
 
+  // Carrega os dados assim que o componente renderiza
   useEffect(() => { loadUserProfile(); }, []);
 
-  async function handleLogout() {
-    try {
-      // Limpa o cache local ao sair para não sobrar rastro do Admin
-      localStorage.removeItem('@Agametec:role');
-      setUserData({ name: '', role: '', initials: '' });
-      await supabase.auth.signOut();
-      navigate('/', { replace: true });
-    } catch (error) {
-      navigate('/');
-    }
+  function handleLogout() {
+    // 2. Limpa todos os tokens e dados de sessão locais do Postgres ao sair
+    localStorage.removeItem('@Agametec:role');
+    localStorage.removeItem('@Agametec:user');
+    localStorage.removeItem('@Agametec:token');
+    
+    setUserData({ name: '', role: '', initials: '' });
+    navigate('/', { replace: true });
   }
 
-  // Agora essa verificação é feita no milissegundo zero
   const isAdmin = userData.role?.toLowerCase() === 'admin';
 
+  // Configuração de rotas baseadas no tipo de perfil logado
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard', show: true },
-    { icon: Ticket, label: 'Chamados', path: '/admin/tickets', show: true },
+    { icon: LayoutDashboard, label: 'Dashboard', path: isAdmin ? '/admin/dashboard' : '/client/dashboard', show: true },
+    { icon: Ticket, label: 'Chamados', path: isAdmin ? '/admin/tickets' : '/client/tickets', show: true },
     { icon: BarChart3, label: 'Relatórios', path: '/admin/reports', show: isAdmin },
     { icon: Users, label: 'Clientes', path: '/admin/customers', show: isAdmin },
     { icon: Building2, label: 'Empresas', path: '/admin/companies', show: isAdmin },
     { icon: DollarSign, label: 'Financeiro', path: '/admin/finance', show: isAdmin },
-    { icon: Settings, label: 'Configurações', path: '/admin/settings', show: true },
+    { icon: Settings, label: 'Configurações', path: isAdmin ? '/admin/settings' : '/client/settings', show: true },
   ];
 
   return (

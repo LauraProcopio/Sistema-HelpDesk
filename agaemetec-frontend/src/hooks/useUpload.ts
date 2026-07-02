@@ -18,7 +18,7 @@ export function useUpload() {
       }
 
       // 3. Dispara para o nosso back-end local
-      const response = await fetch('http://localhost:3001/api/attachments/upload', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/attachments/upload`, {
         method: 'POST',
         headers: {
           // Nota: NÃO coloque 'Content-Type' manual aqui! O próprio navegador define o boundary correto do FormData

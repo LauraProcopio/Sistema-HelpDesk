@@ -89,7 +89,7 @@ export function Reports() {
     if (filteredTickets.length === 0) return toast.error("Lista vazia", { description: "Não há dados para gerar o documento." });
     const doc = new Document({
       sections: [{
-        properties: { page: { orientation: 'landscape' as any } },
+        properties: { page: { orientation: 'landscape' } as any },
         children: [
           new Paragraph({ text: `Campo Grande, ${new Date().toLocaleDateString('pt-BR')}.` }),
           new Paragraph({ text: `À Direção - ${nomeEmpresaDoc}`, spacing: { before: 400, after: 400 } }),
